@@ -1,4 +1,3 @@
-cat > README.md << 'EOF'
 # Terraform CLO Infrastructure
 
 Управление облачной инфраструктурой [clo.ru](https://clo.ru) через Terraform.
