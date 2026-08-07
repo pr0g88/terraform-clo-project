@@ -1,3 +1,4 @@
+cat > README.md << 'EOF'
 # Terraform CLO Infrastructure
 
 Управление облачной инфраструктурой [clo.ru](https://clo.ru) через Terraform.
@@ -13,12 +14,19 @@
 | kubernetes-master | 4 | 8 ГБ | 60 ГБ | K8s Control Plane |
 | kubernetes-node1 | 4 | 8 ГБ | 40 ГБ | K8s Worker |
 
+## 🪣 S3 хранилище
+
+| Пользователь | Размер | Назначение |
+|-------------|--------|------------|
+| k8s-storage | 20 ГБ | Хранилище для Kubernetes |
+
 ## 📦 Модули
 
 - `modules/compute` — виртуальные машины
 - `modules/disk` — дополнительные диски
 - `modules/networking` — IP и Load Balancer
 - `modules/snapshot` — резервное копирование
+- `modules/s3` — S3-совместимое хранилище
 
 ## 🚀 Быстрый старт
 

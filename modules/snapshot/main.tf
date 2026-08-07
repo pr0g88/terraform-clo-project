@@ -9,5 +9,5 @@ terraform {
 
 resource "clo_compute_snapshot" "this" {
   server_id = var.server_id
-  name      = "${var.instance_name}-snapshot-${formatdate("YYYY-MM-DD-hhmm", timestamp())}"
+  name      = "${var.instance_name}-snapshot"
 }

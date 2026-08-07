@@ -11,3 +11,7 @@ output "snapshot_postgres" {
     name = module.snapshot_postgres.snapshot_name
   }
 }
+
+output "s3_user_id" {
+  value = module.s3_kubernetes.user_id
+}
