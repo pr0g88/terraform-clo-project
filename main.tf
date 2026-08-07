@@ -35,28 +35,6 @@ resource "clo_compute_instance" "nginx" {
   }
 }
 
-# PostgreSQL
-resource "clo_compute_instance" "postgresql" {
-  name         = "postgresql-server"
-  flavor_vcpus = 1
-  flavor_ram   = 2
-  image_id     = var.default_image_id
-  project_id   = var.clo_project_id
-  keypairs     = var.default_keypair_ids
-
-  block_device {
-    bootable     = true
-    size         = 20
-    storage_type = "volume"
-  }
-
-  addresses {
-    external        = false
-    version         = 4
-    ddos_protection = false
-  }
-}
-
 # GitLab Server
 resource "clo_compute_instance" "gitlab" {
   name         = "gitlab-server"
@@ -142,5 +120,21 @@ resource "clo_compute_instance" "k8s_node1" {
     external        = false
     version         = 4
     ddos_protection = false
+  }
+}
+
+# PostgreSQL
+resource "clo_compute_instance" "postgres" {
+  name         = "postgres-server"
+  flavor_vcpus = 1
+  flavor_ram   = 2
+  image_id     = var.default_image_id
+  project_id   = var.clo_project_id
+  keypairs     = var.default_keypair_ids
+
+  block_device {
+    bootable     = true
+    size         = 20
+    storage_type = "volume"
   }
 }

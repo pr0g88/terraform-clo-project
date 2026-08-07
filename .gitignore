@@ -5,10 +5,19 @@
 .terraform.lock.hcl
 *.backup
 .terraform.tfstate.lock.info
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
 
 # Секреты
 terraform.tfvars
 *.auto.tfvars
+*.pem
+*.key
 
 # Бинарники
 terraform
@@ -16,9 +25,6 @@ terraform-provider-clo_*
 
 # Плагины
 terraform.d/
-
-# Скрипты инициализации (опционально)
-# init_db.sh
 
 # IDE
 .vscode/

@@ -1,0 +1,4 @@
+clo_api_token       = "your-api-token-here"
+clo_project_id      = "your-project-id"
+default_image_id    = "your-image-id"
+default_keypair_ids = ["your-ssh-key-id"]
