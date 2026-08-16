@@ -39,7 +39,7 @@ resource "clo_compute_instance" "nginx" {
 resource "clo_compute_instance" "gitlab" {
   name         = "gitlab-server"
   flavor_vcpus = 4
-  flavor_ram   = 8
+  flavor_ram   = 12
   image_id     = var.default_image_id
   project_id   = var.clo_project_id
   keypairs     = var.default_keypair_ids
