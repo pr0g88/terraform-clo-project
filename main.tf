@@ -68,7 +68,7 @@ resource "clo_compute_instance" "gitlab_runner" {
 
   block_device {
     bootable     = true
-    size         = 20
+    size         = 40
     storage_type = "volume"
   }
 
