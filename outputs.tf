@@ -15,3 +15,7 @@ output "snapshot_postgres" {
 output "s3_user_id" {
   value = module.s3_kubernetes.user_id
 }
+
+output "autotest_id" {
+  value = clo_compute_instance.autotest.id
+}
