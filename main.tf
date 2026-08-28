@@ -150,7 +150,7 @@ resource "clo_compute_instance" "autotest" {
 
   block_device {
     bootable     = true
-    size         = 80
+    size         = 70
     storage_type = "volume"
   }
 
