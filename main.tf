@@ -16,8 +16,8 @@ provider "clo" {
 # NGINX
 resource "clo_compute_instance" "nginx" {
   name         = "nginx-server"
-  flavor_vcpus = 1
-  flavor_ram   = 2
+  flavor_vcpus = 2
+  flavor_ram   = 4
   image_id     = "35241583-efdb-42a4-bdc4-79a73af6e323"
   project_id   = var.clo_project_id
   keypairs     = var.default_keypair_ids
@@ -60,15 +60,15 @@ resource "clo_compute_instance" "gitlab" {
 # GitLab Runner
 resource "clo_compute_instance" "gitlab_runner" {
   name         = "gitlab-runner"
-  flavor_vcpus = 2
-  flavor_ram   = 4
+  flavor_vcpus = 4
+  flavor_ram   = 8
   image_id     = "35241583-efdb-42a4-bdc4-79a73af6e323"
   project_id   = var.clo_project_id
   keypairs     = var.default_keypair_ids
 
   block_device {
     bootable     = true
-    size         = 40
+    size         = 60
     storage_type = "volume"
   }
 

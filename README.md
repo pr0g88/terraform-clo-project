@@ -6,10 +6,10 @@
 
 | Сервер | vCPU | RAM | Диск | Назначение |
 |--------|------|-----|------|------------|
-| nginx-server | 1 | 2 ГБ | 10 ГБ | Веб-сервер |
+| nginx-server | 2 | 4 ГБ | 10 ГБ | Веб-сервер |
 | postgres-server | 1 | 2 ГБ | 20 ГБ | База данных |
 | gitlab-server | 4 | 12 ГБ | 80 ГБ | GitLab |
-| gitlab-runner | 2 | 4 ГБ | 40 ГБ | CI/CD Runner |
+| gitlab-runner | 4 | 8 ГБ | 40 ГБ | CI/CD Runner / zot registry / vault server |
 | kubernetes-master | 4 | 8 ГБ | 60 ГБ | K8s Control Plane |
 | kubernetes-node1 | 4 | 8 ГБ | 40 ГБ | K8s Worker |
 | autotest-server | 6 | 12 ГБ | 80 ГБ | Автотесты/AppSec |
