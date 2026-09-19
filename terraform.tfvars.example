@@ -1,4 +1,9 @@
 clo_api_token       = "your-api-token-here"
 clo_project_id      = "your-project-id"
-default_image_id    = "your-image-id"
+default_image_id    = "your-image-id"        # используется только autotest-server
 default_keypair_ids = ["your-ssh-key-id"]
+
+# Опционально: образ ОС для остальных серверов (nginx, gitlab, gitlab-runner,
+# kubernetes-*, postgres). Если не задать — используется значение по
+# умолчанию из variables.tf (текущий образ, который уже используется в проде).
+# instance_image_id = "35241583-efdb-42a4-bdc4-79a73af6e323"

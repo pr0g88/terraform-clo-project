@@ -13,150 +13,82 @@ provider "clo" {
   token    = var.clo_api_token
 }
 
-# NGINX
-resource "clo_compute_instance" "nginx" {
-  name         = "nginx-server"
-  flavor_vcpus = 2
-  flavor_ram   = 4
-  image_id     = "35241583-efdb-42a4-bdc4-79a73af6e323"
+# =============================================================================
+# КРИТИЧНЫЕ СЕРВЕРЫ (postgres, gitlab)
+# =============================================================================
+# Отдельный resource-блок с lifecycle.prevent_destroy = true: Terraform
+# откажется удалять/пересоздавать эти ВМ (например, из-за случайной смены
+# image_id/размера или ручного terraform destroy), пока флаг не будет
+# осознанно убран из кода. Это особенно важно при локальном state без
+# lock и без remote backend, где ошибиться легче всего.
+#
+# Данные о размерах серверов берутся из local.critical_instances
+# (locals.tf) — это единственный источник правды, README на него
+# опирается, а не дублирует цифры вручную.
+# =============================================================================
+resource "clo_compute_instance" "critical" {
+  for_each = local.critical_instances
+
+  name         = each.value.name
+  flavor_vcpus = each.value.cpu
+  flavor_ram   = each.value.ram
+  image_id     = each.value.image_id
   project_id   = var.clo_project_id
   keypairs     = var.default_keypair_ids
 
   block_device {
     bootable     = true
-    size         = 10
+    size         = each.value.disk
     storage_type = "volume"
   }
 
-  addresses {
-    external        = true
-    version         = 4
-    ddos_protection = false
+  # У postgres исторически нет внешнего адреса вообще (external = null
+  # в locals.tf) — блок addresses для него не рендерится, как и раньше.
+  dynamic "addresses" {
+    for_each = each.value.external != null ? [1] : []
+    content {
+      external        = each.value.external
+      version         = 4
+      ddos_protection = false
+    }
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
-# GitLab Server
-resource "clo_compute_instance" "gitlab" {
-  name         = "gitlab-server"
-  flavor_vcpus = 4
-  flavor_ram   = 12
-  image_id     = "35241583-efdb-42a4-bdc4-79a73af6e323"
+# =============================================================================
+# ОСТАЛЬНЫЕ СЕРВЕРЫ (nginx, gitlab-runner, kubernetes-*, autotest)
+# =============================================================================
+# Единый for_each вместо восьми скопированных resource-блоков: раньше
+# каждый сервер описывался отдельным ресурсом с ручным копированием
+# аргументов, из-за чего README/locals.tf разъезжались с реальными
+# значениями в main.tf. Теперь размеры серверов берутся из
+# local.standard_instances — правим их в одном месте.
+# =============================================================================
+resource "clo_compute_instance" "standard" {
+  for_each = local.standard_instances
+
+  name         = each.value.name
+  flavor_vcpus = each.value.cpu
+  flavor_ram   = each.value.ram
+  image_id     = each.value.image_id
   project_id   = var.clo_project_id
   keypairs     = var.default_keypair_ids
 
   block_device {
     bootable     = true
-    size         = 80
+    size         = each.value.disk
     storage_type = "volume"
   }
 
-  addresses {
-    external        = false
-    version         = 4
-    ddos_protection = false
-  }
-}
-
-# GitLab Runner
-resource "clo_compute_instance" "gitlab_runner" {
-  name         = "gitlab-runner"
-  flavor_vcpus = 4
-  flavor_ram   = 8
-  image_id     = "35241583-efdb-42a4-bdc4-79a73af6e323"
-  project_id   = var.clo_project_id
-  keypairs     = var.default_keypair_ids
-
-  block_device {
-    bootable     = true
-    size         = 60
-    storage_type = "volume"
-  }
-
-  addresses {
-    external        = false
-    version         = 4
-    ddos_protection = false
-  }
-}
-
-# Kubernetes Master
-resource "clo_compute_instance" "k8s_master" {
-  name         = "kubernetes-master"
-  flavor_vcpus = 4
-  flavor_ram   = 8
-  image_id     = "35241583-efdb-42a4-bdc4-79a73af6e323"
-  project_id   = var.clo_project_id
-  keypairs     = var.default_keypair_ids
-
-  block_device {
-    bootable     = true
-    size         = 60
-    storage_type = "volume"
-  }
-
-  addresses {
-    external        = false
-    version         = 4
-    ddos_protection = false
-  }
-}
-
-# Kubernetes Node 1
-resource "clo_compute_instance" "k8s_node1" {
-  name         = "kubernetes-node1"
-  flavor_vcpus = 4
-  flavor_ram   = 8
-  image_id     = "35241583-efdb-42a4-bdc4-79a73af6e323"
-  project_id   = var.clo_project_id
-  keypairs     = var.default_keypair_ids
-
-  block_device {
-    bootable     = true
-    size         = 40
-    storage_type = "volume"
-  }
-
-  addresses {
-    external        = false
-    version         = 4
-    ddos_protection = false
-  }
-}
-
-# PostgreSQL
-resource "clo_compute_instance" "postgres" {
-  name         = "postgres-server"
-  flavor_vcpus = 1
-  flavor_ram   = 2
-  image_id     = "35241583-efdb-42a4-bdc4-79a73af6e323"
-  project_id   = var.clo_project_id
-  keypairs     = var.default_keypair_ids
-
-  block_device {
-    bootable     = true
-    size         = 20
-    storage_type = "volume"
-  }
-}
-
-# Autotest Server
-resource "clo_compute_instance" "autotest" {
-  name         = "autotest-server"
-  flavor_vcpus = 6
-  flavor_ram   = 12
-  image_id     = var.default_image_id
-  project_id   = var.clo_project_id
-  keypairs     = var.default_keypair_ids
-
-  block_device {
-    bootable     = true
-    size         = 70
-    storage_type = "volume"
-  }
-
-  addresses {
-    external        = false
-    version         = 4
-    ddos_protection = false
+  dynamic "addresses" {
+    for_each = each.value.external != null ? [1] : []
+    content {
+      external        = each.value.external
+      version         = 4
+      ddos_protection = false
+    }
   }
 }
